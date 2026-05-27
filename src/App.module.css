@@ -8,6 +8,25 @@
   background: #1a1a1a;
   border-bottom: 1px solid #2d2d2d;
   padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav {
+  display: flex;
+  gap: 8px;
+}
+
+.navLink {
+  background: transparent;
+  color: #aaa;
+  font-size: 14px;
+  padding: 8px 14px;
+}
+
+.navLink:hover {
+  color: #fff;
 }
 
 .logo {

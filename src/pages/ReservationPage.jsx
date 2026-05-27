@@ -15,6 +15,10 @@ export default function ReservationPage({ onConfirm, onBack }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
+  const selectedSlot = times.find((t) => String(t.id) === selectedTime);
+  const isWaiting = selectedSlot ? !selectedSlot.isAvailable : false;
+  const hasReservedSlot = times.some((t) => !t.isAvailable);
+
   useEffect(() => {
     fetchThemes().then(setThemes).catch((e) => setError(e.message));
   }, []);
@@ -40,10 +44,8 @@ export default function ReservationPage({ onConfirm, onBack }) {
     setError(null);
     try {
       const result = await createReservation({
-        themeId: Number(selectedTheme),
-        date,
-        timeId: Number(selectedTime),
         name: name.trim(),
+        themeSlotId: Number(selectedTime),
       });
       onConfirm(result);
     } catch (e) {
@@ -96,20 +98,24 @@ export default function ReservationPage({ onConfirm, onBack }) {
             ) : times.length === 0 ? (
               <p className={styles.hint}>예약 가능한 시간이 없습니다.</p>
             ) : (
-              <div className={styles.timeGrid}>
-                {times.map((t) => (
-                  <button
-                    key={t.id}
-                    type="button"
-                    disabled={!t.isAvailable}
-                    className={`${styles.timeBtn} ${!t.isAvailable ? styles.unavailable : ''} ${selectedTime === String(t.id) ? styles.selected : ''}`}
-                    onClick={() => t.isAvailable && setSelectedTime(String(t.id))}
-                  >
-                    {t.startAt.slice(0, 5)}
-                    {!t.isAvailable && <span className={styles.tag}>예약됨</span>}
-                  </button>
-                ))}
-              </div>
+              <>
+                <div className={styles.timeGrid}>
+                  {times.map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      className={`${styles.timeBtn} ${!t.isAvailable ? styles.unavailable : ''} ${selectedTime === String(t.id) ? styles.selected : ''}`}
+                      onClick={() => setSelectedTime(String(t.id))}
+                    >
+                      {t.startAt.slice(0, 5)}
+                      {!t.isAvailable && <span className={styles.tag}>대기</span>}
+                    </button>
+                  ))}
+                </div>
+                {hasReservedSlot && (
+                  <p className={styles.hint}>이미 예약된 시간은 대기 신청이 가능합니다.</p>
+                )}
+              </>
             )}
           </div>
         )}
@@ -132,7 +138,11 @@ export default function ReservationPage({ onConfirm, onBack }) {
           className={styles.submitBtn}
           disabled={!selectedTheme || !date || !selectedTime || !name.trim() || submitting}
         >
-          {submitting ? '예약 중...' : '예약 확정'}
+          {submitting
+            ? '처리 중...'
+            : isWaiting
+              ? '대기 신청'
+              : '예약 확정'}
         </button>
       </form>
     </div>

@@ -1,0 +1,160 @@
+.page {
+  max-width: 560px;
+}
+
+.back {
+  background: transparent;
+  color: #aaa;
+  padding: 0;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.back:hover {
+  color: #fff;
+}
+
+.page h2 {
+  font-size: 28px;
+  color: #fff;
+  margin-bottom: 24px;
+}
+
+.searchForm {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.searchForm input {
+  flex: 1;
+}
+
+.searchBtn {
+  background: #e53e3e;
+  color: #fff;
+  padding: 10px 24px;
+  white-space: nowrap;
+}
+
+.searchBtn:hover:not(:disabled) {
+  background: #c53030;
+}
+
+.searchBtn:disabled {
+  background: #444;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.error {
+  background: #2d1010;
+  color: #fc8181;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.message {
+  color: #888;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.section {
+  margin-top: 28px;
+}
+
+.section h3 {
+  font-size: 18px;
+  color: #fff;
+  margin-bottom: 14px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item {
+  background: #1e1e1e;
+  border: 1px solid #2d2d2d;
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.themeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theme {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.meta {
+  font-size: 13px;
+  color: #888;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #2d2d2d;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+.confirmed {
+  background: #14321e;
+  color: #68d391;
+}
+
+.pending {
+  background: #3a2c1a;
+  color: #dd6b20;
+}
+
+.complete {
+  background: #1a2a3a;
+  color: #63b3ed;
+}
+
+.cancelled {
+  background: #2d1010;
+  color: #fc8181;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid #444;
+  color: #aaa;
+  padding: 8px 16px;
+  white-space: nowrap;
+}
+
+.cancelBtn:hover:not(:disabled) {
+  border-color: #e53e3e;
+  color: #e53e3e;
+}
+
+.cancelBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

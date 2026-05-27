@@ -96,20 +96,35 @@
 
 .timeBtn.unavailable {
   background: #1a1a1a;
-  border-color: #2d2d2d;
-  color: #555;
-  cursor: not-allowed;
+  border-color: #3a2c1a;
+  color: #bbb;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
+.timeBtn.unavailable:hover {
+  border-color: #dd6b20;
+  color: #dd6b20;
+}
+
+.timeBtn.unavailable.selected {
+  background: #dd6b20;
+  border-color: #dd6b20;
+  color: #fff;
+}
+
 .tag {
   font-size: 11px;
-  background: #2d2d2d;
-  color: #666;
+  background: #3a2c1a;
+  color: #dd6b20;
   padding: 2px 6px;
   border-radius: 4px;
+}
+
+.timeBtn.selected .tag {
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
 }
 
 .submitBtn {

@@ -13,7 +13,14 @@
 .page h2 {
   font-size: 26px;
   color: #fff;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
+}
+
+.note {
+  color: #dd6b20;
+  font-size: 14px;
+  margin-top: -18px;
+  margin-bottom: 28px;
 }
 
 .card {
@@ -47,6 +54,12 @@
   font-weight: 600;
 }
 
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
 .homeBtn {
   background: #e53e3e;
   color: #fff;
@@ -57,4 +70,17 @@
 
 .homeBtn:hover {
   background: #c53030;
+}
+
+.secondaryBtn {
+  background: transparent;
+  color: #e0e0e0;
+  font-size: 15px;
+  padding: 14px 28px;
+  border-radius: 8px;
+  border: 1px solid #444;
+}
+
+.secondaryBtn:hover {
+  border-color: #888;
 }
