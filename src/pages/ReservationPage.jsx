@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { fetchThemes, fetchAvailableTimes, createReservation } from '../api/index.js';
 import styles from './ReservationPage.module.css';
 
 const today = new Date().toISOString().split('T')[0];
 
-export default function ReservationPage({ onConfirm, onBack }) {
+export default function ReservationPage() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const presetTheme = searchParams.get('themeId') ?? '';
+
   const [themes, setThemes] = useState([]);
-  const [selectedTheme, setSelectedTheme] = useState('');
+  const [selectedTheme, setSelectedTheme] = useState(presetTheme);
   const [date, setDate] = useState(today);
   const [times, setTimes] = useState([]);
   const [selectedTime, setSelectedTime] = useState('');
@@ -47,7 +52,7 @@ export default function ReservationPage({ onConfirm, onBack }) {
         name: name.trim(),
         themeSlotId: Number(selectedTime),
       });
-      onConfirm(result);
+      navigate('/reservation/complete', { state: { reservation: result } });
     } catch (e) {
       setError(e.message);
     } finally {
@@ -57,42 +62,30 @@ export default function ReservationPage({ onConfirm, onBack }) {
 
   return (
     <div className={styles.page}>
-      <button className={styles.back} onClick={onBack}>← 돌아가기</button>
-      <h2>예약하기</h2>
+      <button className={styles.back} onClick={() => navigate('/')}>← 돌아가기</button>
+      <h1 className={`${styles.title} display`}>예약하기</h1>
 
-      {error && <p className={styles.error}>{error}</p>}
+      {error && <p className="alert" style={{ marginBottom: 20 }}>{error}</p>}
 
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.field}>
-          <label>테마 선택</label>
-          <select
-            value={selectedTheme}
-            onChange={(e) => setSelectedTheme(e.target.value)}
-            required
-          >
+      <form onSubmit={handleSubmit} className={`${styles.form} panel`}>
+        <div className="field">
+          <label>테마</label>
+          <select value={selectedTheme} onChange={(e) => setSelectedTheme(e.target.value)} required>
             <option value="">테마를 선택하세요</option>
             {themes.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
+              <option key={t.id} value={t.id}>{t.name}</option>
             ))}
           </select>
         </div>
 
-        <div className={styles.field}>
-          <label>날짜 선택</label>
-          <input
-            type="date"
-            value={date}
-            min={today}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
+        <div className="field">
+          <label>날짜</label>
+          <input type="date" value={date} min={today} onChange={(e) => setDate(e.target.value)} required />
         </div>
 
         {selectedTheme && date && (
-          <div className={styles.field}>
-            <label>예약 가능 시간</label>
+          <div className="field">
+            <label>시간</label>
             {loadingTimes ? (
               <p className={styles.hint}>불러오는 중...</p>
             ) : times.length === 0 ? (
@@ -104,7 +97,7 @@ export default function ReservationPage({ onConfirm, onBack }) {
                     <button
                       key={t.id}
                       type="button"
-                      className={`${styles.timeBtn} ${!t.isAvailable ? styles.unavailable : ''} ${selectedTime === String(t.id) ? styles.selected : ''}`}
+                      className={`${styles.timeBtn} ${!t.isAvailable ? styles.waiting : ''} ${selectedTime === String(t.id) ? styles.selected : ''}`}
                       onClick={() => setSelectedTime(String(t.id))}
                     >
                       {t.startAt.slice(0, 5)}
@@ -113,7 +106,7 @@ export default function ReservationPage({ onConfirm, onBack }) {
                   ))}
                 </div>
                 {hasReservedSlot && (
-                  <p className={styles.hint}>이미 예약된 시간은 대기 신청이 가능합니다.</p>
+                  <p className={styles.hint}>이미 예약된 시간(노란색)은 대기 신청이 가능합니다.</p>
                 )}
               </>
             )}
@@ -121,7 +114,7 @@ export default function ReservationPage({ onConfirm, onBack }) {
         )}
 
         {selectedTime && (
-          <div className={styles.field}>
+          <div className="field">
             <label>예약자 이름</label>
             <input
               type="text"
@@ -135,14 +128,10 @@ export default function ReservationPage({ onConfirm, onBack }) {
 
         <button
           type="submit"
-          className={styles.submitBtn}
+          className={`btn btn-block ${isWaiting ? 'btn-magenta' : 'btn-primary'}`}
           disabled={!selectedTheme || !date || !selectedTime || !name.trim() || submitting}
         >
-          {submitting
-            ? '처리 중...'
-            : isWaiting
-              ? '대기 신청'
-              : '예약 확정'}
+          {submitting ? '처리 중...' : isWaiting ? '대기 신청' : '예약 확정'}
         </button>
       </form>
     </div>

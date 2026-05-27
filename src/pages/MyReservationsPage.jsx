@@ -3,16 +3,16 @@ import { fetchMyReservations, cancelReservation } from '../api/index.js';
 import styles from './MyReservationsPage.module.css';
 
 const STATUS = {
-  CONFIRMED: { label: '예약 확정', className: 'confirmed' },
-  PENDING: { label: '대기', className: 'pending' },
-  COMPLETE: { label: '이용 완료', className: 'complete' },
-  COMPLETED: { label: '이용 완료', className: 'complete' },
-  CANCELLED: { label: '취소됨', className: 'cancelled' },
+  CONFIRMED: { label: '예약 확정', badge: 'badge-confirmed' },
+  PENDING: { label: '대기', badge: 'badge-pending' },
+  COMPLETE: { label: '이용 완료', badge: 'badge-complete' },
+  COMPLETED: { label: '이용 완료', badge: 'badge-complete' },
+  CANCELLED: { label: '취소됨', badge: 'badge-cancelled' },
 };
 
 const CANCELLABLE = new Set(['CONFIRMED', 'PENDING']);
 
-export default function MyReservationsPage({ onBack }) {
+export default function MyReservationsPage() {
   const [name, setName] = useState('');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -23,8 +23,7 @@ export default function MyReservationsPage({ onBack }) {
     setLoading(true);
     setError(null);
     try {
-      const result = await fetchMyReservations(searchName);
-      setData(result);
+      setData(await fetchMyReservations(searchName));
     } catch (e) {
       setError(e.message);
       setData(null);
@@ -59,8 +58,7 @@ export default function MyReservationsPage({ onBack }) {
 
   return (
     <div className={styles.page}>
-      <button className={styles.back} onClick={onBack}>← 돌아가기</button>
-      <h2>내 예약</h2>
+      <h1 className={`${styles.title} display`}>내 예약</h1>
 
       <form onSubmit={handleSearch} className={styles.searchForm}>
         <input
@@ -69,26 +67,20 @@ export default function MyReservationsPage({ onBack }) {
           onChange={(e) => setName(e.target.value)}
           placeholder="예약자 이름을 입력하세요"
         />
-        <button type="submit" className={styles.searchBtn} disabled={!name.trim() || loading}>
+        <button type="submit" className="btn btn-primary" disabled={!name.trim() || loading}>
           {loading ? '조회 중...' : '조회'}
         </button>
       </form>
 
-      {error && <p className={styles.error}>{error}</p>}
-
-      {isEmpty && <p className={styles.message}>예약 내역이 없습니다.</p>}
+      {error && <p className="alert" style={{ marginBottom: 20 }}>{error}</p>}
+      {isEmpty && <p className="empty">예약 내역이 없습니다.</p>}
 
       {reservations.length > 0 && (
         <section className={styles.section}>
-          <h3>예약</h3>
+          <h2 className={styles.sectionTitle}>예약 <span className={styles.count}>{reservations.length}</span></h2>
           <div className={styles.list}>
             {reservations.map((r) => (
-              <ReservationItem
-                key={r.id}
-                reservation={r}
-                onCancel={handleCancel}
-                canceling={cancelingId === r.id}
-              />
+              <Item key={r.id} r={r} onCancel={handleCancel} canceling={cancelingId === r.id} />
             ))}
           </div>
         </section>
@@ -96,15 +88,10 @@ export default function MyReservationsPage({ onBack }) {
 
       {waitings.length > 0 && (
         <section className={styles.section}>
-          <h3>예약 대기</h3>
+          <h2 className={styles.sectionTitle}>예약 대기 <span className={styles.count}>{waitings.length}</span></h2>
           <div className={styles.list}>
             {waitings.map((r) => (
-              <ReservationItem
-                key={r.id}
-                reservation={r}
-                onCancel={handleCancel}
-                canceling={cancelingId === r.id}
-              />
+              <Item key={r.id} r={r} onCancel={handleCancel} canceling={cancelingId === r.id} />
             ))}
           </div>
         </section>
@@ -113,30 +100,24 @@ export default function MyReservationsPage({ onBack }) {
   );
 }
 
-function ReservationItem({ reservation, onCancel, canceling }) {
-  const status = STATUS[reservation.status] ?? { label: reservation.status, className: '' };
-  const cancellable = CANCELLABLE.has(reservation.status);
+function Item({ r, onCancel, canceling }) {
+  const status = STATUS[r.status] ?? { label: r.status, badge: '' };
+  const cancellable = CANCELLABLE.has(r.status);
 
   return (
     <div className={styles.item}>
       <div className={styles.info}>
-        <div className={styles.themeRow}>
-          <span className={styles.theme}>{reservation.theme.name}</span>
-          <span className={`${styles.badge} ${styles[status.className] ?? ''}`}>
+        <div className={styles.head}>
+          <span className={styles.theme}>{r.theme.name}</span>
+          <span className={`badge ${status.badge}`}>
             {status.label}
-            {reservation.waitingOrder != null && ` ${reservation.waitingOrder}번`}
+            {r.waitingOrder != null && ` ${r.waitingOrder}번`}
           </span>
         </div>
-        <p className={styles.meta}>
-          {reservation.date} · {reservation.time.startAt.slice(0, 5)}
-        </p>
+        <p className={styles.meta}>{r.date} · {r.time.startAt.slice(0, 5)}</p>
       </div>
       {cancellable && (
-        <button
-          className={styles.cancelBtn}
-          onClick={() => onCancel(reservation.id)}
-          disabled={canceling}
-        >
+        <button className="btn btn-danger btn-sm" onClick={() => onCancel(r.id)} disabled={canceling}>
           {canceling ? '취소 중...' : '취소'}
         </button>
       )}

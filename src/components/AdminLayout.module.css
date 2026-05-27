@@ -1,0 +1,75 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(8, 8, 16, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 rgba(255, 53, 214, 0.15);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px 0;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--magenta);
+  text-shadow: 0 0 14px rgba(255, 53, 214, 0.5);
+}
+
+.logoAccent {
+  color: var(--cyan);
+  text-shadow: 0 0 14px rgba(34, 224, 255, 0.5);
+}
+
+.exit {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.exit:hover {
+  color: var(--cyan);
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 12px 32px 0;
+}
+
+.tab {
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dim);
+  border-bottom: 2px solid transparent;
+  transition: all 0.18s;
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.active {
+  color: var(--magenta);
+  border-bottom-color: var(--magenta);
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px;
+}

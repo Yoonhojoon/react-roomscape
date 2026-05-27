@@ -23,23 +23,46 @@ const request = async (url, options) => {
   return res.json();
 };
 
+const jsonOptions = (method, body) => ({
+  method,
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(body),
+});
+
+// 테마 API
 export const fetchThemes = () => request('/themes');
 
 export const fetchPopularThemes = (topCount = 10, during = 10) =>
   request(`/themes?topCount=${topCount}&during=${during}`);
 
+export const createTheme = (body) => request('/themes', jsonOptions('POST', body));
+
+export const deleteTheme = (id) => request(`/themes/${id}`, { method: 'DELETE' });
+
+// 시간 API
+export const fetchTimes = () => request('/times');
+
 export const fetchAvailableTimes = (date, themeId) =>
   request(`/times?themeId=${themeId}&date=${date}`);
 
-export const createReservation = (body) =>
-  request('/reservations', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+export const createTime = (body) => request('/times', jsonOptions('POST', body));
+
+export const deleteTime = (id) => request(`/times/${id}`, { method: 'DELETE' });
+
+// 예약 API
+export const fetchAllReservations = () => request('/reservations');
 
 export const fetchMyReservations = (name) =>
   request(`/reservations?name=${encodeURIComponent(name)}`);
 
-export const cancelReservation = (reservationId) =>
-  request(`/reservations/${reservationId}/cancel`, { method: 'PATCH' });
+export const createReservation = (body) =>
+  request('/reservations', jsonOptions('POST', body));
+
+export const updateReservation = (id, body) =>
+  request(`/reservations/${id}`, jsonOptions('PATCH', body));
+
+export const cancelReservation = (id) =>
+  request(`/reservations/${id}/cancel`, { method: 'PATCH' });
+
+export const deleteReservation = (id) =>
+  request(`/reservations/${id}`, { method: 'DELETE' });
